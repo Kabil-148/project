@@ -1,0 +1,41 @@
+- hosts: web
+  become: yes
+  vars:
+    app_dir: /home/webuser/app
+
+  tasks:
+
+    - name: Install required packages
+      apt:
+        name:
+          - python3-pip
+          - python3-venv
+          - nginx
+        state: present
+        update_cache: yes
+
+    - name: Create app directory
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+
+    - name: Copy app code
+      copy:
+        src: app.py
+        dest: "{{ app_dir }}/app.py"
+
+    - name: Create virtual environment
+      command: python3 -m venv {{ app_dir }}/venv
+
+    - name: Install flask in venv
+      shell: |
+        source {{ app_dir }}/venv/bin/activate
+        pip install flask
+
+    - name: Kill old app
+      shell: pkill -f app.py || true
+
+    - name: Start app
+      shell: |
+        source {{ app_dir }}/venv/bin/activate
+        nohup python {{ app_dir }}/app.py > /dev/null 2>&1 &
