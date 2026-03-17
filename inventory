@@ -1,2 +1,2 @@
 [app]
-10.0.1.4
+10.0.1.4 ansible_user=webuser ansible_ssh_common_args='-o StrictHostKeyChecking=no'
