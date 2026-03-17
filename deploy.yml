@@ -1,4 +1,4 @@
-- hosts: web
+- hosts: app
   become: yes
   vars:
     app_dir: /home/webuser/app
